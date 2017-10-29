@@ -25,11 +25,8 @@ void DiGraph::addEdge(int v, int w) {
 }
 
 DiGraph::Iterable DiGraph::adjacent(int v) const {
-  //  std::cout << v << ":" ;
     for(auto a : adjacencyLists.at(v)){
-    //    std::cout << a << " ";
     }
- //   std::cout << std::endl;
 
     return adjacencyLists.at(v);
 

@@ -20,54 +20,39 @@
 template < typename GraphType >
 class TopologicalSort {
 private:
-	/* A DEFINIR */
+
     DFS<GraphType>* g;
     vector<int> sorted;
     
 public:
     //constructeur
     TopologicalSort(const GraphType& g)   {
-        /* A IMPLEMENTER */
         DirectedCycle<GraphType> DCG(g);
+
+        //check if DAG or not. If not, throw exception
         try {
-
-
             if (DCG.HasCycle()) {
-                cout << "yes" << endl;
                 list<int> cycle = DCG.Cycle();
-                /* cout << "Cycle: ";
-                 for(int i : cycle)
-                     cout << i << " ";
-                 cout << endl;
-                 */
+
                 throw GraphNotDAGException(cycle);
-            } else {
-                cout << "no" << endl;
             }
+
         }catch(const GraphNotDAGException& e){
-            cout << e.what() << endl;
-            for(auto i : e.Cycle()){
-                cout << i << " ";
-                throw e;
-            }
-            cout << endl;
+            throw e;
         }
-        /* vous devez verifier la presence d'un cycle, auquel cas il faut lancer une  GraphNotDAGException*/
+
         this->g = new DFS<GraphType>(g);
-
-
-
-
     }
     
     //tableau contenant l'ordre de parcours des indexes des sommets dans le graphe
     const std::vector<int>& Order() {
-        /* A IMPLEMENTER */
-        //return ...
+
+        //lambda magic, first is empty function. *.=
         g->visitGraph([](int v){}, [this](int v){
             sorted.push_back(v);
-           // cout << "KK" << v << endl;
         });
+
+        //reverse the order to correspond to logic of left->right.
         std::reverse(sorted.begin(),sorted.end());
         return sorted;
     }

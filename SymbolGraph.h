@@ -44,13 +44,11 @@ public:
         while (std::getline(s, line))
         {
             removeCarriageReturn(line);
-        //    std::cout << "COUCOU" << cnt  << std::endl;
 
             auto names = split(line,splitChar);
             for( auto name : names ) 
                 if(!contains(name)) {
                     symbolTable[name] = cnt++;
-                   // std::cout << name << std::endl;
                 }
         }
         s.close();
@@ -74,7 +72,7 @@ public:
             }
         }
         s.close();
-        //if we want to have prerequisites->course and not course->prerequisites
+        //we want to have prerequisites->course and not course->prerequisites
         *g = g->reverse();
     }
     
@@ -111,7 +109,7 @@ public:
     const Graph& G() const {
         return *g; 
     }
-
+    //Display all the graph's adjacency lists.
     void print(){
         for(int i =0;i<g->V();++i) {
             list<int> f = g->adjacent(i);
@@ -124,7 +122,7 @@ public:
 
         }
     }
-
+    //sanitization
     void removeCarriageReturn(std::string& line){
             if(line.find("\r") != std::string::npos){
                 line.erase(line.size() - 1);

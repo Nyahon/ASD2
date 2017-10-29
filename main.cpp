@@ -10,8 +10,7 @@
 #include <iostream>
 #include "DiGraph.h"
 #include "TopologicalSort.h"
-// vous devez reutiliser celui du labo 1, ex 2 (cf. donnee)
-#include "ParcoursEnProfondeur.h"
+
 #include "Util.h"
 #include "SymbolGraph.h"
 
@@ -34,6 +33,7 @@ bool checkOrder(const std::vector<int>& order,
     std::ifstream s(filename);
     while (std::getline(s, line))
     {
+        //sanitization
         if(line.find("\r") != std::string::npos) {
             line.erase(line.size() - 1);
         }
@@ -59,31 +59,51 @@ bool checkOrder(const std::vector<int>& order,
     return ok;
 }
 
-void printV(int val){
-    //cout << val << endl;
-}
+
+int test(string filename, char DELIM);
 int main(int argc, const char * argv[]) {
-    string filename = "../prerequis2.txt";
-  //  DiGraph DG = DG("../prerequis.txt");
-    SymbolGraph<DiGraph> SG(filename, ',');
-    SG.print();
-   // SG = SG.G().reverse();
-   // DFS<DiGraph> dfs(SG.G());
-   // dfs.visitGraph(printV, [](int v){});
+    string filename2 = "../prerequis2.txt";
+    string filename = "../prerequis.txt";
+    const char DELIM = ',';
 
-    DirectedCycle<DiGraph> DC(SG.G());
-   // cout << "has cycle: " << (DC.HasCycle() ? "yes" : "no" ) << endl;
+    test(filename, DELIM);
+    cout << "==============" << endl;
+    test(filename2, DELIM);
+    return EXIT_SUCCESS;
 
+}
+
+/*test fonction
+ * 1. Test if graph is a Directed Acyclic Graph
+ * 2. Show Topological sort if so, cycle if not.
+ */
+int test(string filename, char DELIM){
+    SymbolGraph<DiGraph> SG(filename, DELIM);
+    //if you want to see the adjacency lists of graph, uncomment next line.
+    //SG.print();
     try {
         TopologicalSort<DiGraph> TDG(SG.G());
         vector<int> sort = TDG.Order();
 
-    for(auto i : sort){
-        cout << i << " " << endl;
-    }
-    checkOrder(sort, SG, filename, ',');
+        cout << filename << " is a DAG" << endl << endl;
 
-    }catch(const exception& e) {
+        cout << "Topological sort:" << endl;
+        for(auto i : sort){
+            cout << SG.name(i) << " ";
+        }
+        cout << endl;
+        if(checkOrder(sort, SG, filename, ',')){
+            cout << "Check passed succesfully." << endl;
+        }
+
+    }catch(const TopologicalSort<DiGraph>::GraphNotDAGException& e) {
+        cout << filename << " is not a DAG. " << endl << endl;
+
+        cout << "contains the following cycle:" << endl;
+        for(auto i : e.Cycle()){
+            cout << SG.name(i) << " -> ";
+        }
+        cout << SG.name(e.Cycle().front()) << "..." << endl;
         return EXIT_FAILURE;
     }
     return EXIT_SUCCESS;
